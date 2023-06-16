@@ -1,36 +1,37 @@
 package repositories
 
 import (
+	"blog/config"
 	"blog/models"
+	"context"
 	"fmt"
 
-	"github.com/Epritka/morpheus/ogm"
+	"github.com/gin-gonic/gin"
 )
 
 type UserRepository struct {
-	db *ogm.Driver
+	ctx *gin.Context
 }
 
-func NewUserRepository(db *ogm.Driver) *UserRepository {
-	return &UserRepository{db: db}
+func NewUserRepository(ctx *gin.Context) *UserRepository {
+	return &UserRepository{ctx: ctx}
 }
 
 func (r *UserRepository) Create(user *models.User) error {
 	query := `
 		CREATE (u:User {
-			id: %d,
-			firstName: %s,
-			lastName: %s,
-			patronymic: %s,
-			job: %s,
-			email: %s,
-			password: %s,
+			firstName: "%s",
+			lastName: "%s",
+			patronymic: "%s",
+			job: "%s",
+			email: "%s",
+			password: "%s"
 		})
 	`
-	conn := r.db.NewExecuter()
+	db := config.GetDatabaseConnection()
+	conn := db.NewExecuterWithContext(r.ctx.Request.Context())
 	_, err := conn.DoQuery(fmt.Sprintf(
 		query,
-		user.Id,
 		user.FirstName,
 		user.LastName,
 		user.Patronymic,
@@ -38,17 +39,55 @@ func (r *UserRepository) Create(user *models.User) error {
 		user.Email,
 		user.Password,
 	))
+	conn.CloseWithContext(r.ctx.Request.Context())
 	return err
 }
 
-// func (r *UserRepository) FindByID(id uint) (*models.User, error) {
-// 	var user User
-// 	err := r.db.First(&user, id).Error
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return &user, nil
-// }
+func (r *UserRepository) FindByID(id uint) (*models.User, error) {
+	// query := "MATCH (n:User) WHERE ID(n) = %d RETURN n"
+
+	db := config.GetDatabaseConnection()
+	conn := db.NewExecuterWithContext(r.ctx.Request.Context())
+	result, err := conn.DoQuery("MATCH (n:User) RETURN n")
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(result.Next(context.Background()))
+	// if res {
+	// 	// var user models.User
+	// 	record := result.Record()
+	// 	fmt.Println(record.Values...)
+	// 	// user.ID = record.GetByIndex(0).(int)
+	// 	// user.Name = record.GetByIndex(1).(string)
+	// 	// user.Email = record.GetByIndex(2).(string)
+
+	// }
+	conn.CloseWithContext(r.ctx.Request.Context())
+	return nil, nil
+}
+
+func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
+	// query := "MATCH (n:User) WHERE ID(n) = %d RETURN n"
+
+	db := config.GetDatabaseConnection()
+	conn := db.NewExecuterWithContext(r.ctx.Request.Context())
+	result, err := conn.DoQuery("MATCH (n:User) RETURN n")
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(result.Next(context.Background()))
+	// if res {
+	// 	// var user models.User
+	// 	record := result.Record()
+	// 	fmt.Println(record.Values...)
+	// 	// user.ID = record.GetByIndex(0).(int)
+	// 	// user.Name = record.GetByIndex(1).(string)
+	// 	// user.Email = record.GetByIndex(2).(string)
+
+	// }
+	conn.CloseWithContext(r.ctx.Request.Context())
+	return nil, nil
+}
 
 // func (r *UserRepository) Update(user *models.User) error {
 // 	return r.db.Save(user).Error

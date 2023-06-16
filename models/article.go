@@ -3,7 +3,7 @@ package models
 type Article struct {
 	Title             string
 	Subject           string
-	Keywords          []*Keyword
+	Keywords          []string
 	Annotation        string
 	YearOfPublication int
 	SourceLink        string

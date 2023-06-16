@@ -16,12 +16,18 @@ func newDatabseConfig() *config.Config {
 	}
 }
 
-func NewDatabaseConnection() *ogm.Driver {
+var conn *ogm.Driver
+
+func newDatabaseConnection() {
 	config := newDatabseConfig()
 
 	database, err := ogm.Connect(config)
 	if err != nil {
 		panic(fmt.Errorf("fatal error connect database: %w", err))
 	}
-	return database
+	conn = database
+}
+
+func GetDatabaseConnection() *ogm.Driver {
+	return conn
 }
