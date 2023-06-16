@@ -1,0 +1,5 @@
+secret_key: __CHANGEME__
+database:
+  uri: "neo4j://"
+  user: "test"
+  password: "pass"

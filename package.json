@@ -1,0 +1,14 @@
+{
+  "name": "blog-golang",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "unocss --watch",
+    "build": "unocss --minify"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "unocss": "^0.53.1"
+  }
+}
