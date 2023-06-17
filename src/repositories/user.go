@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"blog/config"
-	"blog/models"
+	"blog/src/config"
+	"blog/src/models"
 	"context"
 	"fmt"
 

@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"blog/models"
-	"blog/repositories"
-	"blog/utils"
+	"blog/src/models"
+	"blog/src/repositories"
+	"blog/src/utils"
 	"net/http"
 
 	"github.com/gin-contrib/sessions"

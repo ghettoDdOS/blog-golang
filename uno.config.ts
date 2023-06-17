@@ -3,8 +3,8 @@ import { defineConfig, presetAttributify, presetUno } from 'unocss'
 export default defineConfig({
   cli: {
     entry: {
-      patterns: ['./templates/**/*.tmpl'],
-      outFile: './static/style.css',
+      patterns: ['./src/templates/**/*.tmpl'],
+      outFile: './src/static/style.css',
     },
     // CliEntryItem | CliEntryItem[]
   },

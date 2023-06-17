@@ -1,6 +1,6 @@
 .PHONY: run-server
 run-server:
-	gin run main.go
+	gin run src/main.go
 
 .PHONY: run-unocss
 run-unocss:

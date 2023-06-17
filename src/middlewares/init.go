@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"blog/config"
+	"blog/src/config"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"

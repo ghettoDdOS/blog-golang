@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"blog/config"
+	"blog/src/config"
 	"crypto/sha256"
 	"encoding/hex"
 

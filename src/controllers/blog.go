@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"blog/config"
+	"blog/src/config"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
