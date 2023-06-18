@@ -5,20 +5,18 @@ import (
 	"blog/src/controllers"
 	"blog/src/middlewares"
 	"blog/src/models"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	router := gin.New()
+	router := gin.Default()
 
 	config.InitSettings()
 	middlewares.InitMiddlewares(router)
-	router.LoadHTMLGlob("src/templates/*")
 	controllers.InitRoutes(router)
+	config.InitDatabase()
 	models.InitConstraints()
 
-	serverSettings := config.GetSettings().Server
-	router.Run(fmt.Sprintf(":%d", serverSettings.Port))
+	router.Run(":8080")
 }

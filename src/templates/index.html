@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div font-bold text-xl>Публикации:</div>
+  {% if User %}
+    <a href="/add-article"
+       border
+       border-black
+       border-solid
+       rounded
+       pa-4
+       block
+       text-center
+       hover:shadow-lg
+       transition
+       text-md
+       font-medium>Опубликовать статью</a>
+  {% endif %}
+  <div grid grid-cols-3 gap-4 mt-4>
+    {% for Article in Articles %}
+      <div pa-4 shadow rounded>
+        <div text-lg font-bold>{{ Article.Title }}</div>
+        <div>Тематика: {{ Article.Subject }}</div>
+        <div>Аннотация: {{ Article.Annotation }}</div>
+        <div>Год публикации: {{ Article.YearOfPublication }}</div>
+        <a href="{{ Article.YearOfPublication }}" target="_blank">Источник</a>
+        <div flex items-center>
+          Ключевые слова:
+          <div flex items-center ms-2 space-x-2>
+            {% for Keyword in Article.Keywords %}
+              <div border border-solid border-black rounded pa-1>{{ Keyword }}</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock content %}
+{% block aside %}
+  <div flex flex-col gap-4 pa-2>
+    <div text-md font-bold>Фильтры:</div>
+    <form action="/" method="get" flex flex-col>
+      <label for="Title">Название статьи</label>
+      <input name="Title"
+             id="Title"
+             {% if Filters.Title %}value="{{ Filters.Title }}"{% endif %} />
+      <div flex justify-end>
+        <input type="submit" value="Применить" />
+      </div>
+    </form>
+    <form action="/" method="get" flex flex-col>
+      <label for="FullName">Фио автора</label>
+      <input name="FullName"
+             id="FullName"
+             {% if Filters.FullName %}value="{{ Filters.FullName }}"{% endif %} />
+      <div flex justify-end>
+        <input type="submit" value="Применить" />
+      </div>
+    </form>
+    <form action="/" method="get" flex flex-col>
+      <p m-0>Ключевые слова</p>
+      {% for Keyword in AviableKeywords %}
+        <div>
+          <label for="{{ Keyword }}">{{ Keyword }}</label>
+          <input type="checkbox"
+                 name="Keywords[]"
+                 value="{{ Keyword }}"
+                 id="{{ Keyword }}"
+                 {% if Keyword in Filters.Keywords %}checked="true"{% endif %} />
+        </div>
+      {% endfor %}
+      <div flex justify-end>
+        <input type="submit" value="Применить" />
+      </div>
+    </form>
+    <form action="/" method="get" flex flex-col>
+      <label for="Subject">Тематика</label>
+      <input name="Subject"
+             id="Subject"
+             {% if Filters.Subject %}value="{{ Filters.Subject }}"{% endif %} />
+      <div flex justify-end>
+        <input type="submit" value="Применить" />
+      </div>
+    </form>
+    <form action="/" method="get" flex flex-col>
+      <label for="YearOfPublication">Год публикации</label>
+      <input type="number"
+             name="YearOfPublication"
+             id="YearOfPublication"
+             {% if Filters.YearOfPublication %}value="{{ Filters.YearOfPublication }}"{% endif %} />
+      <div flex justify-end>
+        <input type="submit" value="Применить" />
+      </div>
+    </form>
+    <form action="/" method="get" flex flex-col>
+      <div flex justify-end>
+        <input type="submit" value="Сбросить" />
+      </div>
+    </form>
+  </div>
+{% endblock aside %}

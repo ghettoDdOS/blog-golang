@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru" h-full>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Блог</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body h-full flex flex-col m-0>
+    <header border-b border-black border-solid>
+      <div container mx-auto flex justify-between items-center>
+        <div text-xl font-bold>
+          <a href="/">Блог</a>
+        </div>
+        <div space-x-3>
+          {% if User %}
+            <a href="/personal-area">
+              Личный кабинет: {{ User.LastName }} {{ User.FirstName }}
+              {{ User.Patronymic }}
+            </a>
+          {% else %}
+            <a href="/login">Войти</a>
+            <a href="/registration">Зарегестрироваться</a>
+          {% endif %}
+        </div>
+      </div>
+    </header>
+    <main flex-1 flex py-4>
+      <section container mx-auto>
+        {% block content %}
+        {% endblock content %}
+      </section>
+      <aside border-s border-black border-solid>
+        {% block aside %}
+        {% endblock aside %}
+      </aside>
+    </main>
+    {% block extra_script %}
+    {% endblock extra_script %}
+  </body>
+</html>

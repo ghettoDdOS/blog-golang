@@ -10,5 +10,10 @@ import (
 
 func InitMiddlewares(router *gin.Engine) {
 	store := cookie.NewStore([]byte(config.GetSettings().SecretKey))
-	router.Use(sessions.Sessions("session", store))
+	store.Options(sessions.Options{
+		Path:   "/",
+		MaxAge: int(30 * 24 * 60 * 60),
+	})
+	router.Use(sessions.Sessions("mysession", store))
+
 }

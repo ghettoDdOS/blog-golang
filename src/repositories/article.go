@@ -69,14 +69,13 @@ func (r *ArticleRepository) parseRecords(records []*db.Record) []*models.Article
 		for i, keyword := range articleData["keywords"].([]interface{}) {
 			keywords[i] = keyword.(string)
 		}
-		fmt.Println(keywords)
 		article := models.Article{
 			BaseModel:         models.BaseModel{Id: node.(dbtype.Node).Id},
 			Title:             articleData["title"].(string),
 			Subject:           articleData["subject"].(string),
 			Keywords:          keywords,
 			Annotation:        articleData["annotation"].(string),
-			YearOfPublication: articleData["yearOfPublication"].(int),
+			YearOfPublication: articleData["yearOfPublication"].(int64),
 			SourceLink:        articleData["sourceLink"].(string),
 		}
 		articles = append(articles, &article)
@@ -177,4 +176,52 @@ func (r *ArticleRepository) GetByKeywords(keywords []string) ([]*models.Article,
 	articles := r.parseRecords(records)
 	conn.CloseWithContext(r.ctx.Request.Context())
 	return articles, nil
+}
+
+func (r *ArticleRepository) Get() ([]*models.Article, error) {
+	db := config.GetDatabaseConnection()
+	conn := db.NewExecuterWithContext(r.ctx.Request.Context())
+	conn.
+		Match(entity.NewNode(r.alias).SetLables("Article")).
+		Return(entity.NewAlias(r.alias))
+
+	records, err := conn.Do()
+	if err != nil {
+		return nil, err
+	}
+	articles := r.parseRecords(records)
+	conn.CloseWithContext(r.ctx.Request.Context())
+	return articles, nil
+}
+
+func (r *ArticleRepository) GetAviableKeywords() ([]string, error) {
+	db := config.GetDatabaseConnection()
+	conn := db.NewExecuterWithContext(r.ctx.Request.Context())
+
+	query := `MATCH (%s:Article)
+	RETURN REDUCE(acc = [], value IN COLLECT(DISTINCT %s.keywords) | acc + value)
+	AS keywords`
+
+	cypher := fmt.Sprintf(query, r.alias, r.alias)
+
+	records, err := conn.DoQuery(cypher)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(records) < 1 {
+		return nil, nil
+	}
+
+	node, found := records[0].Get("keywords")
+	if !found {
+		return nil, nil
+	}
+	keywords := make([]string, len(node.([]interface{})))
+	for i, value := range node.([]interface{}) {
+		keywords[i] = value.(string)
+	}
+
+	conn.CloseWithContext(r.ctx.Request.Context())
+	return keywords, nil
 }

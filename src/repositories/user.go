@@ -3,6 +3,7 @@ package repositories
 import (
 	"blog/src/config"
 	"blog/src/models"
+	"blog/src/utils"
 	"errors"
 	"fmt"
 
@@ -24,6 +25,12 @@ func (r *UserRepository) Create(user *models.User) error {
 	db := config.GetDatabaseConnection()
 	conn := db.NewExecuterWithContext(r.ctx.Request.Context())
 
+	password, passwordErr := utils.MakePassword(user.Password)
+
+	if passwordErr != nil {
+		return passwordErr
+	}
+
 	conn.
 		Create(entity.
 			NewNode(r.alias).
@@ -34,7 +41,7 @@ func (r *UserRepository) Create(user *models.User) error {
 				"patronymic": user.Patronymic,
 				"job":        user.Job,
 				"email":      user.Email,
-				"password":   user.Password,
+				"password":   password,
 			}),
 		)
 
@@ -89,5 +96,5 @@ func (r *UserRepository) FindByID(id int64) (*models.User, error) {
 }
 
 func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
-	return r.findBy(fmt.Sprintf("%s.email = %s", r.alias, email))
+	return r.findBy(fmt.Sprintf(`%s.email = "%s"`, r.alias, email))
 }

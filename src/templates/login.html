@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div>
+    <form action="/login" method="post" flex flex-col gap-4>
+      <div flex flex-col>
+        <label for="Email">Email</label>
+        <input type="email" required name="Email" id="Email">
+      </div flex flex-col>
+      <div flex flex-col>
+        <label for="Password">Пароль</label>
+        <input type="password" required name="Password" id="Password">
+      </div flex flex-col>
+      <div flex justify-end>
+        <input type="submit" value="Войти">
+      </div>
+      {% if Error %}<div flex color-red>{{ Error }}</div>{% endif %}
+    </form>
+  </div>
+{% endblock content %}

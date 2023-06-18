@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div>
+    <form action="/add-article" method="post" flex flex-col gap-4>
+      <div flex flex-col>
+        <label for="Title">Название</label>
+        <input name="Title" id="Title">
+      </div flex flex-col>
+      <div flex flex-col>
+        <label for="Subject">Тематика</label>
+        <input name="Subject" id="Subject">
+      </div flex flex-col>
+      <div flex flex-col>
+        <label for="NewKeyword">Добавить ключевое слово</label>
+        <input name="NewKeyword" id="NewKeyword">
+        <button id="AddNewKeywordButton" type="button">Добавить</button>
+        <div id="KeywordsContainer" flex flex-col>
+          <label for="Keywords">Ключевые слова:</label>
+        </div>
+      </div flex flex-col>
+      <div flex flex-col>
+        <label for="Annotation">Аннотация</label>
+        <input name="Annotation" id="Annotation">
+      </div flex flex-col>
+      <div flex flex-col>
+        <label for="YearOfPublication">Год публикации</label>
+        <input type="number" name="YearOfPublication" id="YearOfPublication">
+      </div flex flex-col>
+      <div flex flex-col>
+        <label for="SourceLink">Ссылка на источник</label>
+        <input name="SourceLink" id="SourceLink">
+      </div>
+      <div flex justify-end>
+        <input type="submit" value="Опубликовать">
+      </div>
+      {% if Error %}<div flex color-red>{{ Error }}</div>{% endif %}
+    </form>
+  </div>
+{% endblock content %}
+{% block extra_script %}
+  <script>
+  const KeywordsContainer = document.getElementById("KeywordsContainer")
+  const KeywordInput = document.getElementById("NewKeyword")
+  const AddNewKeywordButton = document.getElementById("AddNewKeywordButton")
+
+  AddNewKeywordButton.addEventListener("click", (e) => {
+    let keywordCheckbox = document.createElement('input')
+    keywordCheckbox.setAttribute("type", "hidden")
+    keywordCheckbox.setAttribute("value", KeywordInput.value)
+    keywordCheckbox.setAttribute("id", KeywordInput.value)
+    keywordCheckbox.setAttribute("name", "Keywords[]")
+
+    let keywordLabel = document.createElement('label')
+    let keywordLabelText = document.createTextNode(KeywordInput.value)
+    keywordLabel.append(keywordLabelText)
+    keywordLabel.setAttribute("for", KeywordInput.value)
+
+    KeywordsContainer.append(keywordLabel)
+    KeywordsContainer.append(keywordCheckbox)
+    KeywordInput.value = ""
+  })
+  </script>
+{% endblock extra_script %}
