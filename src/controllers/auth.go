@@ -5,6 +5,7 @@ import (
 	"blog/src/repositories"
 	"blog/src/services"
 	"blog/src/utils"
+	"fmt"
 
 	"net/http"
 
@@ -65,6 +66,7 @@ func registrationController(ctx *gin.Context) {
 	}
 	err := userRepository.Create(&user)
 	if err != nil {
+		fmt.Println(err)
 		utils.RenderTemplateResponse(
 			ctx,
 			"registration.html",
