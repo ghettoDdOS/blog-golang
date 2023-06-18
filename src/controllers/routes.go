@@ -9,10 +9,13 @@ func InitRoutes(router *gin.Engine) {
 
 	router.GET("/login", loginPageController)
 	router.POST("/login", loginController)
+	router.POST("/logout", logoutController)
 
 	router.GET("/registration", registrationPageController)
 	router.POST("/registration", registrationController)
 
 	router.GET("/add-article", addArticlePageController)
 	router.POST("/add-article", addArticleController)
+
+	router.GET("/personal-area", personalAreaPageController)
 }

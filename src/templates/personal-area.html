@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div font-bold text-xl>Мой профиль:</div>
+  <div grid grid-cols-2 gap-4 mt-4>
+    <div font-bold>Имя:</div>
+    <div>{{ User.FirstName }}</div>
+    <div font-bold>Фамилия:</div>
+    <div>{{ User.LastName }}</div>
+    <div font-bold>Отчество:</div>
+    <div>{{ User.Patronymic }}</div>
+    <div font-bold>Место работы:</div>
+    <div>{{ User.Job }}</div>
+    <div font-bold>Email:</div>
+    <div>{{ User.Email }}</div>
+  </div>
+  <div font-bold text-xl  mt-4>Мои публикации:</div>
+  <div grid grid-cols-3 gap-4 mt-4>
+    {% for Article in Articles %}
+      <div pa-4 shadow rounded>
+        <div text-lg font-bold>{{ Article.Title }}</div>
+        <div>Тематика: {{ Article.Subject }}</div>
+        <div>Аннотация: {{ Article.Annotation }}</div>
+        <div>Год публикации: {{ Article.YearOfPublication }}</div>
+        <a href="{{ Article.YearOfPublication }}" target="_blank">Источник</a>
+        <div flex items-center>
+          Ключевые слова:
+          <div flex items-center ms-2 space-x-2>
+            {% for Keyword in Article.Keywords %}
+              <div border border-solid border-black rounded pa-1>{{ Keyword }}</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock content %}

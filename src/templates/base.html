@@ -12,12 +12,15 @@
         <div text-xl font-bold>
           <a href="/">Блог</a>
         </div>
-        <div space-x-3>
+        <div flex space-x-3>
           {% if User %}
             <a href="/personal-area">
               Личный кабинет: {{ User.LastName }} {{ User.FirstName }}
               {{ User.Patronymic }}
             </a>
+            <form action="/logout" method="post">
+              <input type="submit" value="Выйти">
+            </form>
           {% else %}
             <a href="/login">Войти</a>
             <a href="/registration">Зарегестрироваться</a>

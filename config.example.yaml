@@ -1,6 +1,6 @@
 server:
   port: 8080
-secret_key: __CHANGEME__
+secret_key: a2289c507202c302fc85
 database:
   uri: "neo4j://localhost:7687"
   user: "neo4j"

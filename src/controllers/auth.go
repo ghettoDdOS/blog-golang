@@ -8,6 +8,7 @@ import (
 
 	"net/http"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -84,4 +85,12 @@ func registrationPageController(ctx *gin.Context) {
 		"registration.html",
 		map[string]interface{}{},
 	)
+}
+
+func logoutController(ctx *gin.Context) {
+	session := sessions.Default(ctx)
+	session.Delete("userId")
+	session.Save()
+
+	ctx.Redirect(http.StatusFound, "/login")
 }
