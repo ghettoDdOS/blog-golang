@@ -1,5 +1,9 @@
 package models
 
-type baseModel struct {
-	Id int `form:"Id"`
+type BaseModel struct {
+	Id int64 `form:"Id"`
+}
+
+func InitConstraints() {
+	setUniqueEmailConstraint()
 }

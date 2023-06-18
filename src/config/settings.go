@@ -8,6 +8,9 @@ import (
 )
 
 type Settings struct {
+	Server struct {
+		Port int `mapstructure:"port"`
+	} `mapstructure:"server"`
 	SecretKey string `mapstructure:"secret_key"`
 	Database  struct {
 		Uri      string `mapstructure:"uri"`

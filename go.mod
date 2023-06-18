@@ -6,7 +6,7 @@ require github.com/gin-gonic/gin v1.9.1
 
 require (
 	github.com/0xAX/notificator v0.0.0-20220220101646-ee9b8921e557 // indirect
-	github.com/Epritka/morpheus v0.0.0 // indirect
+	github.com/Epritka/morpheus v0.0.1 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/codegangsta/envy v0.0.0-20141216192214-4b78388c8ce4 // indirect

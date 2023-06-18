@@ -1,6 +1,10 @@
+.PHONY: run-db-server
+run-db-server:
+	docker compose up -d
+
 .PHONY: run-server
 run-server:
-	gin run src/main.go
+	air
 
 .PHONY: run-unocss
 run-unocss:
@@ -8,4 +12,5 @@ run-unocss:
 
 .PHONY: run
 run:
+	@make run-db-server
 	@make -j 2 run-unocss run-server

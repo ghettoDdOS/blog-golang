@@ -3,96 +3,91 @@ package repositories
 import (
 	"blog/src/config"
 	"blog/src/models"
-	"context"
+	"errors"
 	"fmt"
 
+	"github.com/Epritka/morpheus/builder/entity"
 	"github.com/gin-gonic/gin"
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j/dbtype"
 )
 
 type UserRepository struct {
-	ctx *gin.Context
+	ctx   *gin.Context
+	alias string
 }
 
 func NewUserRepository(ctx *gin.Context) *UserRepository {
-	return &UserRepository{ctx: ctx}
+	return &UserRepository{ctx: ctx, alias: "u"}
 }
 
 func (r *UserRepository) Create(user *models.User) error {
-	query := `
-		CREATE (u:User {
-			firstName: "%s",
-			lastName: "%s",
-			patronymic: "%s",
-			job: "%s",
-			email: "%s",
-			password: "%s"
-		})
-	`
 	db := config.GetDatabaseConnection()
 	conn := db.NewExecuterWithContext(r.ctx.Request.Context())
-	_, err := conn.DoQuery(fmt.Sprintf(
-		query,
-		user.FirstName,
-		user.LastName,
-		user.Patronymic,
-		user.Job,
-		user.Email,
-		user.Password,
-	))
+
+	conn.
+		Create(entity.
+			NewNode(r.alias).
+			SetLables("User").SetProperties(
+			map[string]any{
+				"firstName":  user.FirstName,
+				"lastName":   user.LastName,
+				"patronymic": user.Patronymic,
+				"job":        user.Job,
+				"email":      user.Email,
+				"password":   user.Password,
+			}),
+		)
+
+	_, err := conn.Do()
+
 	conn.CloseWithContext(r.ctx.Request.Context())
 	return err
 }
-
-func (r *UserRepository) FindByID(id uint) (*models.User, error) {
-	// query := "MATCH (n:User) WHERE ID(n) = %d RETURN n"
-
+func (r *UserRepository) findBy(query string) (*models.User, error) {
 	db := config.GetDatabaseConnection()
 	conn := db.NewExecuterWithContext(r.ctx.Request.Context())
-	result, err := conn.DoQuery("MATCH (n:User) RETURN n")
+
+	notFoundError := errors.New("user not found error")
+
+	conn.
+		Match(entity.NewNode(r.alias).SetLables("User")).
+		Where(query).
+		Return(entity.NewAlias(r.alias))
+
+	records, err := conn.Do()
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(result.Next(context.Background()))
-	// if res {
-	// 	// var user models.User
-	// 	record := result.Record()
-	// 	fmt.Println(record.Values...)
-	// 	// user.ID = record.GetByIndex(0).(int)
-	// 	// user.Name = record.GetByIndex(1).(string)
-	// 	// user.Email = record.GetByIndex(2).(string)
 
-	// }
+	if len(records) == 0 {
+		return nil, notFoundError
+	}
+
+	node, found := records[0].Get(r.alias)
+
+	if !found {
+		return nil, notFoundError
+	}
+
+	userData := node.(dbtype.Node).Props
+	user := models.User{
+		BaseModel:  models.BaseModel{Id: node.(dbtype.Node).Id},
+		FirstName:  userData["firstName"].(string),
+		LastName:   userData["lastName"].(string),
+		Patronymic: userData["patronymic"].(string),
+		Job:        userData["job"].(string),
+		Email:      userData["email"].(string),
+		Password:   userData["password"].(string),
+	}
+
 	conn.CloseWithContext(r.ctx.Request.Context())
-	return nil, nil
+	return &user, nil
+}
+
+func (r *UserRepository) FindByID(id int64) (*models.User, error) {
+	return r.findBy(fmt.Sprintf("ID(%s) = %d", r.alias, id))
 }
 
 func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
-	// query := "MATCH (n:User) WHERE ID(n) = %d RETURN n"
-
-	db := config.GetDatabaseConnection()
-	conn := db.NewExecuterWithContext(r.ctx.Request.Context())
-	result, err := conn.DoQuery("MATCH (n:User) RETURN n")
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(result.Next(context.Background()))
-	// if res {
-	// 	// var user models.User
-	// 	record := result.Record()
-	// 	fmt.Println(record.Values...)
-	// 	// user.ID = record.GetByIndex(0).(int)
-	// 	// user.Name = record.GetByIndex(1).(string)
-	// 	// user.Email = record.GetByIndex(2).(string)
-
-	// }
-	conn.CloseWithContext(r.ctx.Request.Context())
-	return nil, nil
+	return r.findBy(fmt.Sprintf("%s.email = %s", r.alias, email))
 }
-
-// func (r *UserRepository) Update(user *models.User) error {
-// 	return r.db.Save(user).Error
-// }
-
-// func (r *UserRepository) Delete(user *models.User) error {
-// 	return r.db.Delete(user).Error
-// }
