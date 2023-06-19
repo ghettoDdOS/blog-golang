@@ -223,6 +223,7 @@ func (r *ArticleRepository) GetAviableKeywords() ([]string, error) {
 	for i, value := range node.([]interface{}) {
 		keywords[i] = value.(string)
 	}
+	keywords = utils.RemoveDuplicates(keywords)
 
 	conn.CloseWithContext(r.ctx.Request.Context())
 	return keywords, nil
