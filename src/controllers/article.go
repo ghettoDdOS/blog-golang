@@ -76,14 +76,7 @@ func deleteArticleController(ctx *gin.Context) {
 func userArticlesPageController(ctx *gin.Context) {
 	user := services.GetRequestUser(ctx)
 
-	if user == nil {
-		ctx.Redirect(http.StatusFound, "/login")
-	}
-
-	var articleId int64
-	var err error
-
-	articleId, err = strconv.ParseInt(ctx.Param("articleId"), 10, 64)
+	articleId, err := strconv.ParseInt(ctx.Param("articleId"), 10, 64)
 	if err != nil {
 		log.Println(fmt.Errorf("failed to parse id: %s", err))
 		return
@@ -91,7 +84,7 @@ func userArticlesPageController(ctx *gin.Context) {
 
 	articleRepository := repositories.NewArticleRepository(ctx)
 	author, err := articleRepository.GetAuthor(articleId)
-	if err != nil || user == nil {
+	if err != nil || author == nil {
 		log.Println(fmt.Errorf("failed to found user: %s", err))
 		return
 	}
