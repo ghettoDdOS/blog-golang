@@ -28,9 +28,9 @@
         <div>
           <span font-bold>Год публикации:</span> {{ Article.YearOfPublication }}
         </div>
-        <div flex items-center>
+        <div flex flex-wrap items-center>
           <span font-bold>Ключевые слова:</span>
-          <div flex items-center ms-2 space-x-2>
+          <div flex flex-wrap items-center ms-2 space-y-2 space-x-2>
             {% for Keyword in Article.Keywords %}<div chip>{{ Keyword }}</div>{% endfor %}
           </div>
         </div>
