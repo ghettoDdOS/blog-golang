@@ -43,6 +43,8 @@ func addArticlePageController(ctx *gin.Context) {
 	utils.RenderTemplateResponse(
 		ctx,
 		"add-article.html",
-		map[string]interface{}{},
+		map[string]interface{}{
+			"User": user,
+		},
 	)
 }

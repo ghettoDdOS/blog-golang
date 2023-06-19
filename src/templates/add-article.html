@@ -4,35 +4,38 @@
   <div>
     <form action="/add-article" method="post" flex flex-col gap-4>
       <div flex flex-col>
-        <label for="Title">Название</label>
-        <input name="Title" id="Title">
+        <label font-bold for="Title">Название</label>
+        <input input name="Title" id="Title">
       </div flex flex-col>
       <div flex flex-col>
-        <label for="Subject">Тематика</label>
-        <input name="Subject" id="Subject">
+        <label font-bold for="Subject">Тематика</label>
+        <input input name="Subject" id="Subject">
       </div flex flex-col>
       <div flex flex-col>
-        <label for="NewKeyword">Добавить ключевое слово</label>
-        <input name="NewKeyword" id="NewKeyword">
-        <button id="AddNewKeywordButton" type="button">Добавить</button>
-        <div id="KeywordsContainer" flex flex-col>
-          <label for="Keywords">Ключевые слова:</label>
+        <label font-bold for="NewKeyword">Добавить ключевое слово</label>
+        <div flex>
+          <input input w-full name="NewKeyword" id="NewKeyword" me-1>
+          <button button ms-1 w-fit id="AddNewKeywordButton" type="button">
+            Добавить
+          </button>
         </div>
+        <label font-bold for="Keywords">Ключевые слова:</label>
+        <div id="KeywordsContainer" flex flex-row space-x-3 mt-2></div>
       </div flex flex-col>
       <div flex flex-col>
-        <label for="Annotation">Аннотация</label>
-        <input name="Annotation" id="Annotation">
+        <label font-bold for="Annotation">Аннотация</label>
+        <input input name="Annotation" id="Annotation">
       </div flex flex-col>
       <div flex flex-col>
-        <label for="YearOfPublication">Год публикации</label>
-        <input type="number" name="YearOfPublication" id="YearOfPublication">
+        <label font-bold for="YearOfPublication">Год публикации</label>
+        <input input type="number" name="YearOfPublication" id="YearOfPublication">
       </div flex flex-col>
       <div flex flex-col>
-        <label for="SourceLink">Ссылка на источник</label>
-        <input name="SourceLink" id="SourceLink">
+        <label font-bold for="SourceLink">Ссылка на источник</label>
+        <input input name="SourceLink" id="SourceLink">
       </div>
       <div flex justify-end>
-        <input type="submit" value="Опубликовать">
+        <input button type="submit" value="Опубликовать">
       </div>
       {% if Error %}<div flex color-red>{{ Error }}</div>{% endif %}
     </form>
@@ -55,6 +58,8 @@
     let keywordLabelText = document.createTextNode(KeywordInput.value)
     keywordLabel.append(keywordLabelText)
     keywordLabel.setAttribute("for", KeywordInput.value)
+    keywordLabel.setAttribute("chip", "")
+    keywordLabel.setAttribute("w-fit", "")
 
     KeywordsContainer.append(keywordLabel)
     KeywordsContainer.append(keywordCheckbox)

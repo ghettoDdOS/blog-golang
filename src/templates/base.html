@@ -4,36 +4,49 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Блог</title>
+    <link rel="stylesheet" href="/static/preflight.css" />
     <link rel="stylesheet" href="/static/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+          rel="stylesheet">
   </head>
-  <body h-full flex flex-col m-0>
-    <header border-b border-black border-solid>
+  <body h-full
+        flex
+        flex-col
+        m-0
+        bg-background
+        text-primary
+        font-sans
+        style="font-family: 'Roboto', sans-serif">
+    <header shadow-lg py-4 bg-main border-solid>
       <div container mx-auto flex justify-between items-center>
         <div text-xl font-bold>
           <a href="/">Блог</a>
         </div>
-        <div flex space-x-3>
+        <div flex space-x-3 items-center>
           {% if User %}
-            <a href="/personal-area">
-              Личный кабинет: {{ User.LastName }} {{ User.FirstName }}
+            <div>
+              {{ User.LastName }} {{ User.FirstName }}
               {{ User.Patronymic }}
-            </a>
+            </div>
+            <a href="/personal-area" link>Личный кабинет</a>
             <form action="/logout" method="post">
-              <input type="submit" value="Выйти">
+              <input cursor-pointer link type="submit" value="Выйти">
             </form>
           {% else %}
-            <a href="/login">Войти</a>
-            <a href="/registration">Зарегестрироваться</a>
+            <a link href="/login">Войти</a>
+            <a link href="/registration">Зарегестрироваться</a>
           {% endif %}
         </div>
       </div>
     </header>
-    <main flex-1 flex py-4>
-      <section container mx-auto>
+    <main flex-1 flex py-4 relative>
+      <section container mx-auto px-4>
         {% block content %}
         {% endblock content %}
       </section>
-      <aside border-s border-black border-solid>
+      <aside bg-main rounded-l-lg shadow-lg h-fit sticky top-0 right-0>
         {% block aside %}
         {% endblock aside %}
       </aside>

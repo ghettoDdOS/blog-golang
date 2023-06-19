@@ -1,6 +1,6 @@
 {
   "blank_line_after_tag": "load,extends,include",
   "indent": "2",
-  "ignore": "D018,D004,H030,H031",
+  "ignore": "D018,D004,H030,H031,H021",
   "max_line_length": "80"
 }
