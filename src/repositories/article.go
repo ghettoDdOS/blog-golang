@@ -4,6 +4,7 @@ import (
 	"blog/src/config"
 	"blog/src/models"
 	"blog/src/utils"
+	"errors"
 	"fmt"
 
 	"github.com/Epritka/morpheus/builder/entity"
@@ -138,6 +139,7 @@ func (r *ArticleRepository) GetByFullName(fullName string) ([]*models.Article, e
 	conn.CloseWithContext(r.ctx.Request.Context())
 	return articles, nil
 }
+
 func (r *ArticleRepository) GetByUserId(userId int64) ([]*models.Article, error) {
 	db := config.GetDatabaseConnection()
 	conn := db.NewExecuterWithContext(r.ctx.Request.Context())
@@ -242,4 +244,41 @@ func (r *ArticleRepository) DeleteById(id int) error {
 
 	conn.CloseWithContext(r.ctx.Request.Context())
 	return nil
+}
+
+func (r *ArticleRepository) GetAuthor(articleId int64) (*models.User, error) {
+	db := config.GetDatabaseConnection()
+	conn := db.NewExecuterWithContext(r.ctx.Request.Context())
+
+	conn.
+		Match(entity.
+			NewPatternList(entity.NewNode("u").SetLables("User")).
+			Related(entity.NewRelationship("").SetLables("WROTE")).
+			To(entity.NewNode(r.alias).SetLables("Article")),
+		).
+		Where(fmt.Sprintf("ID(%s) = %d", r.alias, articleId)).
+		Return(entity.NewAlias("u"))
+
+	records, err := conn.Do()
+	if err != nil {
+		return nil, err
+	}
+	if len(records) == 0 {
+		return nil, errors.New("recors not found error")
+	}
+	node, found := records[0].Get("u")
+	if !found {
+		return nil, err
+	}
+	userData := node.(dbtype.Node).Props
+	conn.CloseWithContext(r.ctx.Request.Context())
+	return &models.User{
+		BaseModel:  models.BaseModel{Id: node.(dbtype.Node).Id},
+		FirstName:  userData["firstName"].(string),
+		LastName:   userData["lastName"].(string),
+		Patronymic: userData["patronymic"].(string),
+		Job:        userData["job"].(string),
+		Email:      userData["email"].(string),
+		Password:   userData["password"].(string),
+	}, err
 }

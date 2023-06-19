@@ -19,4 +19,5 @@ func InitRoutes(router *gin.Engine) {
 	router.POST("/delete-article/:articleId", deleteArticleController)
 
 	router.GET("/personal-area", personalAreaPageController)
+	router.GET("/articles/:articleId", userArticlesPageController)
 }
