@@ -225,3 +225,21 @@ func (r *ArticleRepository) GetAviableKeywords() ([]string, error) {
 	conn.CloseWithContext(r.ctx.Request.Context())
 	return keywords, nil
 }
+
+func (r *ArticleRepository) DeleteById(id int) error {
+	db := config.GetDatabaseConnection()
+	conn := db.NewExecuterWithContext(r.ctx.Request.Context())
+
+	conn.
+		Match(entity.NewNode(r.alias).SetLables("Article")).
+		Where(fmt.Sprintf("ID(%s) = %d", r.alias, id)).
+		DetachDelete(entity.NewAlias(r.alias))
+
+	_, err := conn.Do()
+	if err != nil {
+		return err
+	}
+
+	conn.CloseWithContext(r.ctx.Request.Context())
+	return nil
+}

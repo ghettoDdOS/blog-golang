@@ -34,8 +34,11 @@
             {% for Keyword in Article.Keywords %}<div chip>{{ Keyword }}</div>{% endfor %}
           </div>
         </div>
-        <div flex justify-end mt-3>
+        <div flex justify-end mt-3 space-x-3>
           <a href="{{ Article.SourceLink }}" link target="_blank">Источник</a>
+          <form action="/delete-article/{{ Article.Id }}" method="post">
+            <input cursor-pointer link bg-red type="submit" value="Удалить">
+          </form>
         </div>
       </div>
     {% endfor %}

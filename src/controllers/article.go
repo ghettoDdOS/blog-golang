@@ -5,7 +5,10 @@ import (
 	"blog/src/repositories"
 	"blog/src/services"
 	"blog/src/utils"
+	"fmt"
+	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -47,4 +50,23 @@ func addArticlePageController(ctx *gin.Context) {
 			"User": user,
 		},
 	)
+}
+
+func deleteArticleController(ctx *gin.Context) {
+	articleRepository := repositories.NewArticleRepository(ctx)
+	user := services.GetRequestUser(ctx)
+	if user == nil {
+		ctx.Redirect(http.StatusFound, "/login")
+	}
+
+	articleId, err := strconv.Atoi(ctx.Param("articleId"))
+	if err != nil {
+		log.Fatal(fmt.Errorf("failed to delete article: %s", err))
+	}
+	err = articleRepository.DeleteById(articleId)
+	if err != nil {
+		log.Fatal(fmt.Errorf("failed to delete article: %s", err))
+	}
+
+	ctx.Redirect(http.StatusFound, "/personal-area")
 }
